@@ -1,5 +1,4 @@
 ﻿using Calculadora.Models.Historic;
-using Calculadora.Models.Operations.Core;
 
 namespace Calculadora.Interfaces.IO
 {
@@ -14,5 +13,7 @@ namespace Calculadora.Interfaces.IO
         void ShowBanner();
 
         void ShowOperationResult(List<double> numbers, string simbol, double result);
+
+        void BreakLine();
     }
 }

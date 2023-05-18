@@ -1,4 +1,5 @@
-﻿using Calculadora.Interfaces.IO;
+﻿using Calculadora.Exceptions;
+using Calculadora.Interfaces.IO;
 using Calculadora.Models.Operations.Core;
 
 namespace Calculadora.IO
@@ -16,40 +17,49 @@ namespace Calculadora.IO
             if (int.TryParse(Console.ReadLine(), out int optionNumber)){
                 return optionNumber;
             }
-            return null;
+            throw new RestartProgramException("Opção Incorreta! Tente Novamente!");
         }
 
-        public List<double> GetNumbers(Operation operation)
+        public List<double> GetNumbers(Operation operation, double result, bool hasHistoric)
         {
             var numbers = new List<double>();
             if (operation is OneNumberOperation)
             {
-                var number = GetNumberByMessage("\nDigite um número: ");
+                var number = GetNumberByMessage("\nDigite um número: ", result, hasHistoric);
                 numbers.Add(number);
             }
             else
             {
-                var number = GetNumberByMessage("\nDigite o primeiro número: "); ;
+                var number = GetNumberByMessage("\nDigite o primeiro número: ", result, hasHistoric);
                 numbers.Add(number);
 
-                number = GetNumberByMessage("Digite o segundo número: ");
+                number = GetNumberByMessage("Digite o segundo número: ", result, hasHistoric);
                 numbers.Add(number);
             }
             return numbers;
         }
 
-        private static double GetInputNumber()
+        private static double GetInputNumber(double result)
         {
-            if (!double.TryParse(Console.ReadLine(), out double number)){
-                throw new Exception("Número Inválido!");
+            var input = Console.ReadLine();
+            if (input == "")
+            {
+                return result;
+            }
+            if (!double.TryParse(input, out double number)){
+                throw new RestartProgramException("Número Inválido!");
             }
             return number;
         }
 
-        private double GetNumberByMessage(string message)
+        private double GetNumberByMessage(string message, double result, bool hasHistoric)
         {
+            if (hasHistoric)
+            {
+                message = $"{message}[Pressione enter para pegar o resultado anterior] ";
+            }
             _programOutput.ShowMessage(message);
-            var number = GetInputNumber();
+            var number = GetInputNumber(result);
             return number;
         }
     }

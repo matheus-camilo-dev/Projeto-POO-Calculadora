@@ -2,7 +2,8 @@
 {
     public enum OptionNumber
     {
-        Sum = 1,
+        Exit = 0,
+        Sum,
         Subtraction,
         Multiplication,
         Division,
@@ -10,7 +11,6 @@
         Cube,
         SquareRoot,
         CubicRoot,
-        ShowHistory,
-        Exit
+        ShowHistory
     }
 }

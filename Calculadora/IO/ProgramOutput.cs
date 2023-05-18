@@ -1,4 +1,5 @@
-﻿using Calculadora.Interfaces.IO;
+﻿using Calculadora.Exceptions;
+using Calculadora.Interfaces.IO;
 using Calculadora.Models.Historic;
 
 namespace Calculadora.IO
@@ -9,9 +10,10 @@ namespace Calculadora.IO
         {
             if (!historyOperations.Any())
             {
-                Console.WriteLine("\nNão há nada na histórico!\n");
+                throw new RestartProgramException("Não há nada no histórico!");
             }
 
+            BreakLine();
             for (int i = 0; i < historyOperations.Count; i++)
             {
                 ShowOperationResult(historyOperations[i].Numbers, historyOperations[i].Simbol, historyOperations[i].Result);
@@ -20,6 +22,7 @@ namespace Calculadora.IO
 
         public void ShowMenuOptions()
         {
+            Console.WriteLine("\n==========================");
             Console.WriteLine("[ 1 ] Adição");
             Console.WriteLine("[ 2 ] Subtração");
             Console.WriteLine("[ 3 ] Multiplicação");
@@ -29,7 +32,8 @@ namespace Calculadora.IO
             Console.WriteLine("[ 7 ] Raiz Quadrada");
             Console.WriteLine("[ 8 ] Raiz Cubica");
             Console.WriteLine("[ 9 ] Mostrar Histórico");
-            Console.WriteLine("[ 10 ] Sair");
+            Console.WriteLine("[ 0 ] Sair");
+            Console.WriteLine("==========================");
 
             Console.Write("\nDigite o número da opção desejada: ");
         }
@@ -43,7 +47,7 @@ namespace Calculadora.IO
         {
             Console.WriteLine("=-=-=-=-=-=-=-=-=-=-=-=-=");
             Console.WriteLine("= C A L C U L A D O R A =");
-            Console.WriteLine("=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+            Console.WriteLine("=-=-=-=-=-=-=-=-=-=-=-=-=");
         }
 
         public void ShowOperationResult(List<double> numbers, string simbol, double result)
@@ -55,7 +59,12 @@ namespace Calculadora.IO
                 Console.Write($" {numbers[1]}");
             }
 
-            Console.WriteLine($" = {result}\n");
+            Console.WriteLine($" = {result}");
+        }
+
+        public void BreakLine()
+        {
+            ShowMessage("\n");
         }
     }
 }

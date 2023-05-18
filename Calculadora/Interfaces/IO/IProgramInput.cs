@@ -6,6 +6,6 @@ namespace Calculadora.Interfaces.IO
     {
         int? GetOptionNumber();
 
-        List<double> GetNumbers(Operation operation);
+        List<double> GetNumbers(Operation operation, double result, bool hasHistory);
     }
 }

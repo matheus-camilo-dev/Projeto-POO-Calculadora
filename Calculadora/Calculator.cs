@@ -1,4 +1,5 @@
 ﻿using Calculadora.Enums;
+using Calculadora.Exceptions;
 using Calculadora.Interfaces.IO;
 using Calculadora.Models.Historic;
 using Calculadora.Models.Operations;
@@ -20,61 +21,61 @@ public class Calculator
     public void Run()
     {
         _programOutput.ShowBanner();
-       
-        try
+        double result = 0;
+        while(true)
         {
-            while (true)
+            try
             {
                 _programOutput.ShowMenuOptions();
 
                 var optionNumber = _programInput.GetOptionNumber();
-                if (!ContinueProgram(optionNumber, out Operation operation))
-                {
-                    break;
-                }
-                else if(operation is null)
-                {
-                    continue;
-                }
-
-                var numbers = _programInput.GetNumbers(operation);
+                ContinueProgram(optionNumber, out Operation operation);
+ 
+                var numbers = _programInput.GetNumbers(operation, result, Historic.Any());
                 operation.SetNumbers(numbers);
-                var result = operation.Calculate();
+                result = operation.Calculate();
+
+                _programOutput.BreakLine();
                 _programOutput.ShowOperationResult(operation.Numbers, operation.Simbol, result);
+
                 StoreOperationInHistoric(operation, result);
             }
-            
-            _programOutput.ShowMessage("\nFim do programa! Até logo ;)\n");
-        }
-        catch (Exception ex)
-        {
-            _programOutput.ShowMessage($"\n{ex.Message}\n");
+            catch (RestartProgramException ex)
+            {
+                if (ex.Message != string.Empty)
+                {
+                    _programOutput.ShowMessage($"\n{ex.Message}\n");
+                }
+                continue;
+            }
+            catch (FinishProgramException ex)
+            {
+                if (ex.Message != string.Empty)
+                {
+                    _programOutput.ShowMessage($"\n{ex.Message}\n");
+                }
+                break;
+            }
         }
     }
 
     private bool ContinueProgram(int? optionNumber, out Operation operation)
     {
         operation = null;
-        if(optionNumber <= 0 || optionNumber >= 11)
+        if(optionNumber < 0 || optionNumber >= 10)
         {
-            _programOutput.ShowMessage("\nOpção Inválida!\n");
-            return true;
+            throw new RestartProgramException("Opção Inválida!");
         }
 
         if (optionNumber == (int)OptionNumber.Exit)
         {
-            return false;
+            throw new FinishProgramException();
         }
 
         if (optionNumber == (int)OptionNumber.ShowHistory)
         {
             _programOutput.ShowHistoryOperations(Historic);
-            return true;
-        }
-
-        if (optionNumber is null)
-        {
-            return true;
+            throw new RestartProgramException();
         }
 
         operation = GetOperationInstance((OptionNumber) optionNumber);

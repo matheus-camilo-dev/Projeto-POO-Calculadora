@@ -39,11 +39,10 @@ namespace Calculadora.IO
             return numbers;
         }
 
-        private static double GetInputNumber(double result)
+        private static double GetInputNumber(double result, bool hasHistoric)
         {
             var input = Console.ReadLine();
-            if (input == "")
-            {
+            if (input == "" && hasHistoric) {
                 return result;
             }
             if (!double.TryParse(input, out double number)){
@@ -59,7 +58,7 @@ namespace Calculadora.IO
                 message = $"{message}[Pressione enter para pegar o resultado anterior] ";
             }
             _programOutput.ShowMessage(message);
-            var number = GetInputNumber(result);
+            var number = GetInputNumber(result, hasHistoric);
             return number;
         }
     }

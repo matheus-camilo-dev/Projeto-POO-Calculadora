@@ -30,7 +30,7 @@ public class Calculator
 
                 var optionNumber = _programInput.GetOptionNumber();
                 ContinueProgram(optionNumber, out Operation operation);
- 
+                
                 var numbers = _programInput.GetNumbers(operation, result, Historic.Any());
                 operation.SetNumbers(numbers);
                 result = operation.Calculate();
